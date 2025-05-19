@@ -14,7 +14,8 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
-	"strings"
+
+	// "strings"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -99,8 +100,8 @@ func cmd() *cobra.Command {
 		debug     bool
 	)
 	c := cobra.Command{
-		Use:   "example-app",
-		Short: "An example OpenID Connect client",
+		Use:   "client-app",
+		Short: "OpenID Connect Client",
 		Long:  "",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) != 0 {
@@ -191,8 +192,8 @@ func cmd() *cobra.Command {
 			}
 		},
 	}
-	c.Flags().StringVar(&a.clientID, "client-id", "example-app", "OAuth2 client ID of this application.")
-	c.Flags().StringVar(&a.clientSecret, "client-secret", "ZXhhbXBsZS1hcHAtc2VjcmV0", "OAuth2 client secret of this application.")
+	c.Flags().StringVar(&a.clientID, "client-id", "client-app", "OAuth2 client ID of this application.")
+	c.Flags().StringVar(&a.clientSecret, "client-secret", "client-app-secret", "OAuth2 client secret of this application.")
 	c.Flags().StringVar(&a.redirectURI, "redirect-uri", "http://127.0.0.1:5555/callback", "Callback URL for OAuth2 responses.")
 	c.Flags().StringVar(&issuerURL, "issuer", "http://127.0.0.1:5556/dex", "URL of the OpenID Connect issuer.")
 	c.Flags().StringVar(&listen, "listen", "http://127.0.0.1:5555", "HTTP(S) address to listen at.")
@@ -225,21 +226,23 @@ func (a *app) oauth2Config(scopes []string) *oauth2.Config {
 }
 
 func (a *app) handleLogin(w http.ResponseWriter, r *http.Request) {
+
 	var scopes []string
-	if extraScopes := r.FormValue("extra_scopes"); extraScopes != "" {
-		scopes = strings.Split(extraScopes, " ")
-	}
-	var clients []string
-	if crossClients := r.FormValue("cross_client"); crossClients != "" {
-		clients = strings.Split(crossClients, " ")
-	}
-	for _, client := range clients {
-		scopes = append(scopes, "audience:server:client_id:"+client)
-	}
-	connectorID := ""
-	if id := r.FormValue("connector_id"); id != "" {
-		connectorID = id
-	}
+
+	// if extraScopes := r.FormValue("extra_scopes"); extraScopes != "" {
+	// 	scopes = strings.Split(extraScopes, " ")
+	// }
+	// var clients []string
+	// if crossClients := r.FormValue("cross_client"); crossClients != "" {
+	// 	clients = strings.Split(crossClients, " ")
+	// }
+	// for _, client := range clients {
+	// 	scopes = append(scopes, "audience:server:client_id:"+client)
+	// }
+	// connectorID := ""
+	// if id := r.FormValue("connector_id"); id != "" {
+	// 	connectorID = id
+	// }
 
 	authCodeURL := ""
 	scopes = append(scopes, "openid", "profile", "email")
@@ -251,9 +254,9 @@ func (a *app) handleLogin(w http.ResponseWriter, r *http.Request) {
 	} else {
 		authCodeURL = a.oauth2Config(scopes).AuthCodeURL(exampleAppState, oauth2.AccessTypeOffline)
 	}
-	if connectorID != "" {
-		authCodeURL = authCodeURL + "&connector_id=" + connectorID
-	}
+	// if connectorID != "" {
+	// 	authCodeURL = authCodeURL + "&connector_id=" + connectorID
+	// }
 
 	http.Redirect(w, r, authCodeURL, http.StatusSeeOther)
 }
