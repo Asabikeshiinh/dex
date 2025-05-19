@@ -6,10 +6,12 @@ import (
 	"net/http"
 )
 
+// css представляет собой строку, содержащую стили CSS,
+// которые определяют внешний вид и поведение элементов веб-страницы.
 const css = `
-	body {
+	body {	
 		font-family: Arial, sans-serif;
-		background-color: #f2f2f2;
+		background-color:rgb(0, 64, 78);
 		margin: 0;
 	}
 
@@ -19,12 +21,12 @@ const css = `
     }
 
 	.dex {
-		font-size: 2em;
-		font-weight: bold;
-		color: #3F9FD8; /* Main color */
+    	font-size: 2em;
+    	font-weight: bold;
+    	color:hsl(55, 66.20%, 54.70%); /* Основной цвет */
 	}
 
-	.example-app {
+	.client-app {
 		font-size: 1em;
 		color: #EF4B5C; /* Secondary color */
 	}
@@ -152,13 +154,15 @@ const css = `
 	}
 `
 
+// indexTmpl представляет собой HTML-шаблон,
+// который используется для отображения страницы входа в веб-приложении.
 var indexTmpl = template.Must(template.New("index.html").Parse(`<html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Example App - Login</title>
+    <title>Client App - Login</title>
     <style>
 ` + css + `
         body {
@@ -196,32 +200,15 @@ var indexTmpl = template.Must(template.New("index.html").Parse(`<html>
 </head>
 <body>
     <div class="header">
-        <div class="dex">Dex</div>
-        <div class="example-app">Example App</div>
+		<div class="dex">Client App</div>
     </div>
     <form action="/login" method="post">
         <div class="form-instructions">
-            If needed, customize your login settings below, then click <strong>Login</strong> to proceed.
+            Login in to the app via one of services below.
         </div>
         <hr/>
         <p>
-            <label for="cross_client">Authenticate for:</label>
-            <input type="text" id="cross_client" name="cross_client" placeholder="list of client-ids">
-        </p>
-        <p>
-            <label for="extra_scopes">Extra scopes:</label>
-            <input type="text" id="extra_scopes" name="extra_scopes" placeholder="list of scopes">
-        </p>
-        <p>
-            <label for="connector_id">Connector ID:</label>
-            <input type="text" id="connector_id" name="connector_id" placeholder="connector id">
-        </p>
-        <p>
-            <label for="offline_access">Request offline access:</label>
-            <input type="checkbox" id="offline_access" name="offline_access" value="yes" checked>
-        </p>
-        <p>
-            <input type="submit" value="Login">
+            <input type="submit" value="Login as Google">
         </p>
     </form>
 </body>
